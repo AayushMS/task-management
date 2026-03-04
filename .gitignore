@@ -15,3 +15,6 @@ venv/
 .idea/
 .vscode/
 *.swp
+
+# Deployment secrets
+DEPLOYMENT_DOCS/DEPLOYED_ENV.md
