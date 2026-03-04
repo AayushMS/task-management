@@ -113,6 +113,19 @@ Created `Dockerfile` at project root that: uses python:3.12-slim, copies `backen
 ### 18:17 deploy-render — Second deploy: update_failed
 User reported Render was failing. Checked deploy status: `update_failed` (build passed, service crashed at startup). Investigation: env vars were not saved during service creation — Render API accepted them in the request body but did not persist them. App crashed on startup with KeyError for DATABASE_URL.
 
+### 18:17 deploy-render — Investigated failure via Render API (user-requested)
+User asked to figure out the Render logs API rather than checking the dashboard manually. Fetched API docs from:
+- `https://api-docs.render.com/reference/retrieve-deploy` — confirmed no dedicated build log endpoint on the deploy object
+- `https://api-docs.render.com/reference/logs` — found `GET /v1/logs` endpoint with `startTime`, `endTime`, `resource[]` parameters
+
+### 18:17 deploy-render — Render logs API returned no results
+Tried multiple parameter formats for `GET /v1/logs`:
+1. `?serviceId=srv-...` → HTTP 400: "invalid path 'serviceId'" — wrong param name
+2. `?resource[]=srv-...` (URL-encoded) → HTTP 200 but 0 log lines
+3. `?resource[]=srv-...&ownerId=...` → HTTP 200 but 0 log lines
+4. `?resource[]=srv-...` with time window around failed deploy → 0 log lines
+Conclusion: Render's `/v1/logs` endpoint returns runtime logs only, not build logs. Build logs are only accessible via the dashboard. Root cause was found by a different route — inspecting deploy status (`update_failed` vs `build_failed`) and checking env vars via `GET /v1/services/{id}/env-vars`.
+
 ### 18:18 deploy-render — Env vars set via separate API call
 `PUT /v1/services/{id}/env-vars` with array payload set: DATABASE_URL, REDIS_URL, SECRET_KEY (generated with `openssl rand -hex 32`), ACCESS_TOKEN_EXPIRE_MINUTES=1440. Verified via GET — all 4 keys confirmed present.
 
@@ -192,6 +205,7 @@ Fetched HTML (1112 chars). Page contains: "Task Manager", "Log In", "Register", 
 **Known issues / gotchas for future reference:**
 - Render free tier spins down after 15 min inactivity; cold start ~30s
 - Render API does not persist env vars set in the service creation payload — must use a separate PUT /env-vars call
+- Render `/v1/logs` API returns runtime logs only, not build logs; build logs require the dashboard. Use deploy status (`build_failed` vs `update_failed`) + env var inspection to diagnose failures via API
 - Render API silently resets custom dockerfilePath; workaround: place Dockerfile at repo root
 - WSL2 prevents gh OAuth browser flow from completing; workaround: use API keys or PATs
 - `neonctl` interactive org prompt requires `--org-id` flag to work non-interactively
