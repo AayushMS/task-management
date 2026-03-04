@@ -1,0 +1,20 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #f5f5f5; display: flex; justify-content: center; padding: 2rem; }
+#app { width: 100%; max-width: 480px; }
+h1 { margin-bottom: 1rem; font-size: 1.5rem; }
+.card { background: #fff; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,.1); margin-bottom: 1rem; }
+input[type=email], input[type=password], input[type=text] {
+  width: 100%; padding: .6rem .8rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: .8rem; font-size: 1rem;
+}
+button { padding: .6rem 1.2rem; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+.btn-primary { background: #4f46e5; color: #fff; }
+.btn-secondary { background: #e5e7eb; color: #111; }
+.btn-danger { background: #ef4444; color: #fff; }
+.task-item { display: flex; align-items: center; gap: .8rem; padding: .6rem 0; border-bottom: 1px solid #f0f0f0; }
+.task-item:last-child { border-bottom: none; }
+.task-title { flex: 1; }
+.task-title.done { text-decoration: line-through; color: #9ca3af; }
+.error { color: #ef4444; font-size: .9rem; margin-bottom: .5rem; }
+.hidden { display: none; }
+#add-row { display: flex; gap: .5rem; margin-bottom: 1rem; }
+#add-row input { margin-bottom: 0; }
