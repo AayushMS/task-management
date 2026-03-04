@@ -50,3 +50,27 @@ NEON_API_KEY captured. `neonctl me` returned aayushms1999@gmail.com. Key persist
 ### scan-project — Files written
 HOW_TO_RUN.md, SERVICES.md, DEPLOYMENT_PLAN.md written to DEPLOYMENT_DOCS/. Outcome: success.
 
+### gh-repo-setup — SSH push failed (wrong account)
+`gh repo create` succeeded but git push via SSH authenticated as `ams-maitri` instead of `AayushMS`. Switched remote to HTTPS.
+
+### deploy-render — Service created
+POST /v1/services created task-management-backend. Service ID: srv-d6k7d3ggjchc73c0lf4g. URL: https://task-management-backend-kgqn.onrender.com
+
+### deploy-render — First two deploys failed
+build_failed (initial, wrong Dockerfile path). Created root-level Dockerfile to copy backend + frontend. update_failed (env vars not saved by API during service creation). Fixed by separate PUT /v1/services/{id}/env-vars call.
+
+### deploy-render — Third deploy succeeded
+DATABASE_URL, REDIS_URL, SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES set. Deploy went live. curl / and /docs both returned 200.
+
+### deploy-upstash — Redis database created
+POST /v2/redis/database (global, primary: us-east-1, TLS). Database ID: 2e75d222-471b-44b2-8b47-478006d38fd2.
+REDIS_URL captured (rediss://). Endpoint: bright-hagfish-4552.upstash.io.
+
+### deploy-neon — Project created
+`neonctl projects create --name task-management` succeeded. Project ID: wandering-star-17513992, region: aws-us-east-1.
+DATABASE_URL (pooled) captured. sslmode=require confirmed.
+
+### gh-repo-setup — Repo created and pushed via HTTPS
+`git remote set-url origin https://...` + `gh auth setup-git` + `git push`. Outcome: success.
+Repo URL: https://github.com/AayushMS/task-management
+
