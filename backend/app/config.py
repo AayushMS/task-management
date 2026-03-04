@@ -1,0 +1,7 @@
+import os
+
+DATABASE_URL = os.environ["DATABASE_URL"]
+REDIS_URL = os.environ["REDIS_URL"]
+SECRET_KEY = os.environ["SECRET_KEY"]
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
