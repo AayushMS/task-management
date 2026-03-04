@@ -22,3 +22,12 @@ def decode_token(token: str):
         return int(payload["sub"])
     except (JWTError, KeyError, ValueError):
         return None
+
+from app.redis_client import get_redis
+
+def blacklist_token(token: str):
+    r = get_redis()
+    r.setex(f"blacklist:{token}", ACCESS_TOKEN_EXPIRE_MINUTES * 60, "1")
+
+def is_blacklisted(token: str) -> bool:
+    return bool(get_redis().get(f"blacklist:{token}"))

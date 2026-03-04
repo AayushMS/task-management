@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app.database import get_db
 from app.models import Task, User
-from app.auth import decode_token
+from app.auth import decode_token, is_blacklisted
 
 router = APIRouter()
 
@@ -12,6 +12,8 @@ def get_current_user(authorization: str = Header(None), db: Session = Depends(ge
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Not authenticated")
     token = authorization.split(" ", 1)[1]
+    if is_blacklisted(token):
+        raise HTTPException(status_code=401, detail="Token has been revoked")
     user_id = decode_token(token)
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token")
